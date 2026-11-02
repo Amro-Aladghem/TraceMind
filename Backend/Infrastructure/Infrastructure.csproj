@@ -9,12 +9,13 @@
 	<ItemGroup>
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.30.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.13" />
-		<PackageReference Include="Mscc.GenerativeAI" Version="3.1.0" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+		<PackageReference Include="OllamaSharp" Version="5.5.0" />
 	</ItemGroup>
 
 
 	<ItemGroup>
+    <Folder Include="Resources\" />
     <Folder Include="Data\" />
     <Folder Include="ExternalServices\" />
   </ItemGroup>

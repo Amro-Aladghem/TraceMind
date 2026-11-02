@@ -6,6 +6,6 @@ namespace Infrastructure.AI.Interfaces
 {
     public interface IAgentChat
     {
-        Task<string?> Chat(Guid inventoryId, object? messagesContext);
+        Task<string?> Chat(Guid applicationId, object? messagesContext);
     }
 }
