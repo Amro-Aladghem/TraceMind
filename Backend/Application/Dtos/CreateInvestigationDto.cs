@@ -1,4 +1,5 @@
 using Domain.Enums;
+using System.Text.Json;
 
 namespace Application.Dtos
 {
@@ -6,6 +7,11 @@ namespace Application.Dtos
     {
         public Guid ApplicationId { get; set; }
         public string Title { get; set; } = null!;
+        public string? Summary { get; set; }
+        public string? RootCause { get; set; }
+        public JsonElement? Recommendations { get; set; }
+        public double? Confidence { get; set; }
+        public string? ModelName { get; set; }
     }
 
     public class CreateInvestigationResponseDto

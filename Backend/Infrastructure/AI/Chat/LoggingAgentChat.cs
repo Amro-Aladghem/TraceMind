@@ -31,7 +31,9 @@ namespace Infrastructure.AI.Chat
                 IsFinished = false,
                 Message = (string?)null,
                 AskUser = false,
-                HasError = false
+                HasError = false,
+                ToolName = (string?)null,
+                Data = new object()
             };
 
             JsonNode schema = JsonSerializerOptions.Default
@@ -39,9 +41,9 @@ namespace Infrastructure.AI.Chat
 
             var request = new ChatRequest
             {
-                Model = "gemma3",
+                Model = "qwen2.5-coder:7b",
                 Stream = false,
-                Format = schema,
+                Format= "json",
                 Messages =
                 [
                     new Message(ChatRole.System, LoggingAgentSysPrompt),

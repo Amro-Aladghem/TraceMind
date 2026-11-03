@@ -1,6 +1,7 @@
 using Application.Dtos;
 using Application.Services;
 using Application.Tools.Interfaces;
+using System.Text.Json;
 
 namespace Application.Tools.Investigations
 {
@@ -24,7 +25,12 @@ namespace Application.Tools.Investigations
                 _investigationService.CreateInvestigationAsync(new CreateInvestigationRequestDto
                 {
                     ApplicationId = createInvestigationToolArg.applicationId,
-                    Title = createInvestigationToolArg.title
+                    Title = createInvestigationToolArg.title,
+                    Summary = createInvestigationToolArg.summary,
+                    RootCause = createInvestigationToolArg.rootCause,
+                    Recommendations = createInvestigationToolArg.recommendations,
+                    Confidence = createInvestigationToolArg.confidence,
+                    ModelName = createInvestigationToolArg.modelName
                 }), Name);
         }
     }
@@ -33,5 +39,10 @@ namespace Application.Tools.Investigations
     {
         public Guid applicationId { get; set; }
         public string title { get; set; } = null!;
+        public string? summary { get; set; }
+        public string? rootCause { get; set; }
+        public JsonElement? recommendations { get; set; }
+        public double? confidence { get; set; }
+        public string? modelName { get; set; }
     }
 }

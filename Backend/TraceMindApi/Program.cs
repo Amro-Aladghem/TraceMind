@@ -1,12 +1,17 @@
+using Application.Agents;
 using Application.Dtos;
+using Application.Services;
+using Application.Services.Coordinators;
 using Application.Tools;
+using Application.Tools.Coordinator;
 using Application.Tools.Interfaces;
+using Infrastructure.AI.Chat;
+using Infrastructure.AI.Interfaces;
 using Infrastructure.Backgroundworkers;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using OllamaSharp;
 using Presentation;
-using System.Reflection;
 using System.Threading.Channels;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,35 +19,31 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(context =>
     context.UseNpgsql(builder.Configuration["SQL_CONNECTION_STRING"]));
 
-builder.Services.AddSingleton(new OllamaApiClient(new Uri(
-    builder.Configuration["OllamaUrl"] ?? "http://localhost:11434")));
-
-builder.Services.AddSingleton<Channel<AgentRequestDto>>(
-    _ => Channel.CreateUnbounded<AgentRequestDto>()
-);
-
-var applicationAssembly = typeof(IAgentTool).Assembly;
-var infrastructureAssembly = typeof(AppDbContext).Assembly;
-
-var serviceNamespaces = new (Assembly Assembly, string Namespace)[]
+var httpClient = new HttpClient
 {
-    (applicationAssembly, "Application.Services"),
-    (applicationAssembly, "Application.Services.Coordinators"),
-    (applicationAssembly, "Application.Agents"),
-    (applicationAssembly, "Application.Tools.Coordinator"),
-    (infrastructureAssembly, "Infrastructure.AI.Chat"),
+    BaseAddress = new Uri(
+        builder.Configuration.GetSection("Ollama_Uri").Value!),
+    Timeout = TimeSpan.FromMinutes(10)
 };
 
-foreach (var (assembly, targetNamespace) in serviceNamespaces)
-{
-    var serviceTypes = assembly.GetTypes()
-        .Where(type => type.IsClass && !type.IsAbstract && type.Namespace == targetNamespace);
+builder.Services.AddSingleton(new OllamaApiClient(httpClient));
 
-    foreach (var serviceType in serviceTypes)
-        builder.Services.AddScoped(serviceType);
-}
+builder.Services.AddScoped<ChatService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<LogService>();
+builder.Services.AddScoped<ApplicationService>();
+builder.Services.AddScoped<AIInvestigationService>();
 
-var toolTypes = applicationAssembly.GetTypes()
+builder.Services.AddScoped<AgentChatCoordinator>();
+builder.Services.AddScoped<AgentExecutionService>();
+builder.Services.AddScoped<ToolChatCoordinator>();
+
+
+builder.Services.AddScoped<LoggingAgent>();
+builder.Services.AddScoped<LoggingAgentChat>();
+builder.Services.AddScoped<IAgentChat>(provider => provider.GetRequiredService<LoggingAgentChat>());
+
+var toolTypes = typeof(IAgentTool).Assembly.GetTypes()
     .Where(type => type.IsClass && !type.IsAbstract && typeof(IAgentTool).IsAssignableFrom(type));
 
 foreach (var toolType in toolTypes)
@@ -52,16 +53,18 @@ foreach (var toolType in toolTypes)
 }
 
 builder.Services.AddScoped<ToolExecutor>();
-builder.Services.AddHostedService<AgentBackgroundWorker>();
 
-// Add services to the container.
+
+builder.Services.AddSingleton<Channel<AgentRequestDto>>(
+    _ => Channel.CreateUnbounded<AgentRequestDto>()
+);
+
+builder.Services.AddHostedService<AgentBackgroundWorker>();
 
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(AssemblyReference).Assembly);
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
 

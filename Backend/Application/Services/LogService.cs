@@ -17,6 +17,34 @@ namespace Application.Services
         }
 
         /// <summary>
+        /// Creates a new log entry for an application.
+        /// </summary>
+        public async Task<LogDto> CreateLog(Guid applicationId, LogDto dto)
+        {
+            var log = new Domain.Enities.Log
+            {
+                Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
+                ApplicationId = applicationId,
+                Timestamp = dto.Timestamp == default ? DateTimeOffset.UtcNow : ToDateTimeOffset(dto.Timestamp),
+                Level = dto.Level,
+                Message = dto.Message,
+                Exception = dto.Exception,
+                Properties = dto.Properties,
+                RequestPath = dto.RequestPath,
+                RequestMethod = dto.RequestMethod,
+                StatusCode = dto.StatusCode,
+                TraceId = dto.TraceId,
+                IpAddress = dto.IpAddress,
+                Domain = dto.Domain
+            };
+
+            _context.Logs.Add(log);
+            await _context.SaveChangesAsync();
+
+            return ToDto(log);
+        }
+
+        /// <summary>
         /// Returns logs for an application with optional filters and pagination.
         /// </summary>
         public async Task<GetLogsResponseDto> GetLogsAsync(GetLogsRequestDto request)
@@ -351,6 +379,37 @@ namespace Application.Services
                     IsActive = a.IsActive
                 })
                 .FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Returns today's Error and Fatal logs grouped by request path and message.
+        /// </summary>
+        public async Task<List<DailyErrorLogDto>> GetDailyErrorLogsAsync(Guid applicationId)
+        {
+            var today = ToDateTimeOffset(DateTime.Today);
+            var tomorrow = ToDateTimeOffset(DateTime.Today.AddDays(1));
+
+            return await _context.Logs
+                .AsNoTracking()
+                .Where(l =>
+                    l.ApplicationId == applicationId &&
+                    l.Timestamp >= today &&
+                    l.Timestamp < tomorrow &&
+                    (l.Level == eLogLevel.Error ||
+                     l.Level == eLogLevel.Fatal))
+                .GroupBy(l => new
+                {
+                    l.RequestPath,
+                    l.Message
+                })
+                .Select(g => new DailyErrorLogDto
+                {
+                    RequestPath = g.Key.RequestPath,
+                    Message = g.Key.Message,
+                    Count = g.LongCount()
+                })
+                .OrderByDescending(g => g.Count)
+                .ToListAsync();
         }
 
         private static LogDto ToDto(Domain.Enities.Log l)

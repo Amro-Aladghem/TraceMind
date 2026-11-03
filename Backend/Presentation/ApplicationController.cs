@@ -90,6 +90,16 @@ namespace Presentation
             return Ok(result);
         }
 
+        [HttpPost("{applicationId}/logs")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<LogDto>> CreateLog(Guid applicationId, LogDto logDto)
+        {
+            var result = await _logService.CreateLog(applicationId, logDto);
+
+            return CreatedAtAction(nameof(GetLogs), new { applicationId }, result);
+        }
+
         [HttpGet("{applicationId}/logs")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

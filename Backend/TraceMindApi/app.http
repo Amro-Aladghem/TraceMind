@@ -1,0 +1,14 @@
+@TraceMind_HostAddress =  https://localhost:7272/api/v1/applications
+@ApplicationId = 0f449779-0ec6-44ff-a565-29d3e9008f31
+@ChatSignature = 660e8708-4712-461d-bbeb-197156e170d1
+
+POST {{TraceMind_HostAddress}}/{{ApplicationId}}/chats/{{ChatSignature}}
+Content-Type: application/json
+
+{
+    "chatSignture": "{{ChatSignature}}",
+    "applicationId": "{{ApplicationId}}",
+    "message": "Analyze the application's logs and overall health.",
+    "imageUri": null,
+    "agentType": "LoggingAgent"
+}

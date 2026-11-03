@@ -18,17 +18,25 @@ namespace Application.Services
         }
 
         /// <summary>
-        /// Creates a new investigation for an application in the Pending state.
+        /// Creates a new completed investigation for an application.
         /// </summary>
         public async Task<CreateInvestigationResponseDto> CreateInvestigationAsync(CreateInvestigationRequestDto request)
         {
+            var now = DateTime.UtcNow;
+
             var investigation = new AIInvestigation
             {
                 Id = Guid.NewGuid(),
                 ApplicationId = request.ApplicationId,
                 Title = request.Title,
-                Status = eInvestigationStatus.Pending,
-                StartedAt = DateTime.UtcNow
+                Summary = request.Summary,
+                RootCause = request.RootCause,
+                Recommendations = request.Recommendations,
+                Confidence = request.Confidence,
+                Status = eInvestigationStatus.Completed,
+                ModelName = request.ModelName,
+                StartedAt = now,
+                CompletedAt = now
             };
 
             _context.AIInvestigations.Add(investigation);
