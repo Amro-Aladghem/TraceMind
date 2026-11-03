@@ -39,7 +39,7 @@ namespace Infrastructure.Backgroundworkers
                     var notificationService = scope.ServiceProvider
                         .GetRequiredService<NotificationService>();
 
-                    await notificationService.CreateNotification(job.StoreId, new NotificationDto()
+                    await notificationService.CreateNotification(job.ApplicationId, new NotificationDto()
                     {
                         ChatSignature = job.ChatSignture!.Value,
                         AgentType = job.AgentType!,

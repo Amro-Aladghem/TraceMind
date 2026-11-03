@@ -6,7 +6,7 @@ namespace Application.Agents
 {
     public class AgentRequestMessage
     {
-        public string Text { get; set; }
-        public string Role { get; set; }    
+        public string Text { get; set; } = null!;
+        public string Role { get; set; } = null!;    
     }
 }

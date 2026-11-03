@@ -8,7 +8,7 @@ namespace Application.Dtos
     public record AgentResponseDto
     {
         public bool IsFinished { get; set; }
-        public string Message { get; set; }
+        public string Message { get; set; } = null!;
         public string? ToolName { get; set; }
         public JsonElement? Data { get; set; }
         public bool AskUser { get; set; }

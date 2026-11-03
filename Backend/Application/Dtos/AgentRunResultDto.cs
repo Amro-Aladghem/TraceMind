@@ -8,7 +8,7 @@ namespace Application.Dtos
     public class AgentRunResultDto
     {
         public bool IsFinished { get; set; } = false;
-        public string Message { get; set; }
+        public string Message { get; set; } = null!;
         public bool AskUser { get; set; } = false;
         public bool HasError { get; set; } = false;
     }

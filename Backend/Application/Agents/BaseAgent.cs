@@ -55,7 +55,7 @@ namespace Application.Agents
                 agentResponse = await _agentChatCoordinator.GenerateAgentResponse
                 (
                     agentRequestDto.ChatSignture!.Value,
-                    agentRequestDto.StoreId,
+                    agentRequestDto.ApplicationId,
                     _agentChat
                 );
 
@@ -76,7 +76,7 @@ namespace Application.Agents
                 agentRunResultDto = await HandleAgentResponse
                 (
                     agentResponse,
-                    agentRequestDto.StoreId,
+                    agentRequestDto.ApplicationId,
                     agentRequestDto.ChatSignture.Value
                 );
 
