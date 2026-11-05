@@ -66,6 +66,7 @@ namespace Application.Services
                     Summary = i.Summary,
                     RootCause = i.RootCause,
                     Recommendations = i.Recommendations,
+                    Confidence = i.Confidence,
                     Status = i.Status,
                     ModelName = i.ModelName,
                     StartedAt = i.StartedAt,

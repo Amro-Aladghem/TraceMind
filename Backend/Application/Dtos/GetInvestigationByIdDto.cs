@@ -16,6 +16,7 @@ namespace Application.Dtos
         public string? Summary { get; set; }
         public string? RootCause { get; set; }
         public JsonElement? Recommendations { get; set; }
+        public double? Confidence { get; set; }
         public eInvestigationStatus Status { get; set; }
         public string? ModelName { get; set; }
         public DateTime StartedAt { get; set; }
