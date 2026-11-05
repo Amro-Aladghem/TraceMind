@@ -2,6 +2,12 @@
 
 TraceMind is an AI-powered observability assistant. It ingests your application's logs, investigates the daily Error and Fatal entries with an AI agent, and saves a structured investigation with a summary, root cause, recommendations, and confidence — so you can understand what went wrong without reading every log line yourself.
 
+<div style={{ textAlign: "center" }}>
+<img width="630" height="440" alt="sgFM6wXg8m" src="https://github.com/user-attachments/assets/db3f6d7e-c848-4d5f-a3d2-515ebadc2de4" />
+</div>
+
+<img width="1280" height="720" alt="تصميم بدون عنوان (7)" src="https://github.com/user-attachments/assets/11d0dc82-b178-45f1-b546-15d6a3373a0d" />
+
 ## 1. What TraceMind Does
 
 - Stores application logs with level, message, exception, request path, method, status code, trace id, IP, domain, and request duration.
@@ -160,4 +166,4 @@ The app includes:
 
 Contributions are welcome! Feel free to open a pull request: fork the repo, create a feature branch, commit your changes, and describe your PR clearly.
 
-Author: TraceMind Team
+Author: Amro Aladghem
